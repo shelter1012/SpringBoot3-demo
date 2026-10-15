@@ -1,0 +1,28 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/fusion_db?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    banner: false
+    db-config:
+      logic-delete-field: delFlag
+      logic-delete-value: '1'
+      logic-not-delete-value: '0'
+
+#      jwt密钥和过期时间
+jwt:
+  secret: fusion-portal-jwt-secret-key-2026-please-change-this
+  expiration: 86400000
+
+# 文件上传配置
+file:
+  #  文件实际存到磁盘的路径
+  upload-path: D:/Work/SpringBoot/Springboot3/demo/uploads
+  # 访问上传文件的 URL 前缀
+  access-prefix: /uploads
