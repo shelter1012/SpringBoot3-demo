@@ -1,4 +1,4 @@
-package com.example.demo.intercepter;
+package com.example.demo.interceptor;
 
 import com.example.demo.common.UserContext;
 import com.example.demo.common.utils.JwtUtils;
@@ -24,44 +24,40 @@ public class AuthInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         // 1. 从请求头拿 token
         String authHeader = request.getHeader("Authorization");
-        System.out.println("【拦截器】authHeader = " + authHeader);   // ← 加这行
 
+        // 如果没带 token，直接放行（具体的权限校验留给 Controller 处理）
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            System.out.println("【拦截器】没有 token，放行");   // ← 加这行
             return true;
         }
 
         String token = authHeader.substring(7);
-        System.out.println("【拦截器】token = " + token);   // ← 加这行
 
         try {
+            // 2. 解析 token
             Claims claims = jwtUtils.parseToken(token);
-            System.out.println("【拦截器】claims = " + claims);   // ← 加这行
-
             Long userId = claims.get("userId", Long.class);
-            System.out.println("【拦截器】解析出的 userId = " + userId);   // ← 加这行
 
             if (userId != null) {
+                // 3. 查数据库获取用户信息
                 SysUser user = sysUserService.getById(userId);
-                System.out.println("【拦截器】查到的 user = " + user);   // ← 加这行
 
                 if (user != null) {
+                    // 4. 存入 ThreadLocal，供后续业务代码和 AutoFillHandler 使用
                     UserContext.setUserId(user.getKid());
                     UserContext.setInstId(user.getInstid());
                 }
             }
         } catch (Exception e) {
+            // token 无效或过期，不抛异常，让 Controller 去判断是否拦截
             System.out.println("【拦截器】Token 解析失败：" + e.getMessage());
-            e.printStackTrace();   // ← 加这行，打印完整堆栈
         }
 
-        System.out.println("【拦截器】最终 userId = " + UserContext.getUserId());   // ← 加这行
         return true;
     }
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
-        // 请求结束，清理 ThreadLocal，防止内存泄漏
+        // 请求结束，必须清理 ThreadLocal，防止内存泄漏
         UserContext.clear();
     }
 }

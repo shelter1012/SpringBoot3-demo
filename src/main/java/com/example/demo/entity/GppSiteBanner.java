@@ -1,10 +1,9 @@
 package com.example.demo.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.FieldFill;
 
 import java.time.LocalDateTime;
 
@@ -33,12 +32,14 @@ public class GppSiteBanner {
     private String delFlag;
 
 //    创建人ID
+    @TableField(fill = FieldFill.INSERT)
     private Long createUser;
 
 //    创建时间
     private LocalDateTime createTime;
 
 //    更新人ID
+    @TableField(fill = FieldFill.INSERT_UPDATE)
     private Long updateUser;
 
 //    更新时间

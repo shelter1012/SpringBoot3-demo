@@ -1,6 +1,6 @@
 package com.example.demo.config;
 
-import com.example.demo.intercepter.AuthInterceptor;
+import com.example.demo.interceptor.AuthInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
